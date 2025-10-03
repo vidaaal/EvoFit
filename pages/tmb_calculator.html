@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Calculadora TMB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #00CC00;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h2 {
+            color: #FF0000;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .content p {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* ==================== FORMULÁRIO E INPUTS ==================== */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #E0E0E0;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #1f1f1f;
+            color: #E0E0E0;
+            box-sizing: border-box;
+            font-size: 16px;
+            appearance: none; /* Remove seta padrão em selects */
+        }
+        select option {
+            background-color: #1f1f1f;
+            color: #E0E0E0;
+        }
+
+        /* ==================== BOTÃO DE CÁLCULO ==================== */
+        #btnCalcular {
+            width: 100%;
+            padding: 15px;
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #btnCalcular:hover {
+            background-color: #CC0000;
+        }
+
+        /* ==================== ÁREA DE RESULTADO ==================== */
+        #resultArea {
+            background-color: #1f1f1f;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #00CC00; /* Borda Verde de Sucesso */
+            text-align: center;
+            display: none; /* Escondido por padrão */
+        }
+        #resultArea h3 {
+            color: #FFC107;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        #tmbResult {
+            font-size: 36px;
+            font-weight: bold;
+            color: #E0E0E0;
+            margin: 10px 0;
+        }
+        #tdeeResult {
+            font-size: 24px;
+            color: #00CC00;
+        }
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="redirecionar('nutrition_goals.html')"></i>
+        <h1>Cálculo de Calorias</h1>
+    </div>
+
+    <div class="content">
+        <h2>Calculadora de Metabolismo Basal (TMB)</h2>
+        <p>Insira seus dados para estimar seu gasto calórico diário em repouso.</p>
+
+        <form id="tmbForm">
+            <label for="sexo">Sexo:</label>
+            <select id="sexo" required>
+                <option value="" disabled selected>Selecione</option>
+                <option value="homem">Homem</option>
+                <option value="mulher">Mulher</option>
+            </select>
+
+            <label for="idade">Idade (Anos):</label>
+            <input type="number" id="idade" min="15" max="100" placeholder="Ex: 30" required>
+
+            <label for="peso">Peso (Kg):</label>
+            <input type="number" id="peso" step="0.1" min="30" placeholder="Ex: 85.5" required>
+
+            <label for="altura">Altura (cm):</label>
+            <input type="number" id="altura" min="100" max="250" placeholder="Ex: 180" required>
+            
+            <label for="atividade">Nível de Atividade Física:</label>
+            <select id="atividade" required>
+                <option value="" disabled selected>Selecione</option>
+                <option value="1.2">Sedentário (Pouco ou nenhum exercício)</option>
+                <option value="1.375">Leve (1-3 dias/semana)</option>
+                <option value="1.55">Moderado (3-5 dias/semana)</option>
+                <option value="1.725">Alto (6-7 dias/semana)</option>
+                <option value="1.9">Extremo (2x ao dia, atletas)</option>
+            </select>
+
+            <button type="submit" id="btnCalcular">CALCULAR MINHAS CALORIAS</button>
+        </form>
+
+        <div id="resultArea">
+            <h3>Seu Gasto Calórico Estimado</h3>
+            <div id="tmbResult"></div>
+            <p style="margin-bottom: 0;">Gasto total diário (com atividade):</p>
+            <div id="tdeeResult"></div>
+        </div>
+
+    </div>
+
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    
+    // ================= LÓGICA DA CALCULADORA TMB =================
+    
+    document.getElementById('tmbForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        calcularTMB();
+    });
+
+    function calcularTMB() {
+        const sexo = document.getElementById('sexo').value;
+        const idade = parseFloat(document.getElementById('idade').value);
+        const peso = parseFloat(document.getElementById('peso').value);
+        const altura = parseFloat(document.getElementById('altura').value);
+        const fatorAtividade = parseFloat(document.getElementById('atividade').value);
+
+        let tmb = 0;
+
+        // Fórmula de Mifflin-St Jeor (Padrão Ouro)
+        if (sexo === 'homem') {
+            tmb = (10 * peso) + (6.25 * altura) - (5 * idade) + 5;
+        } else if (sexo === 'mulher') {
+            tmb = (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+        }
+
+        const tdee = tmb * fatorAtividade;
+        
+        // **CORREÇÃO CRÍTICA AQUI:** Salva o peso do usuário para o cálculo de Emagrecimento/Água
+        localStorage.setItem('userTMB', Math.round(tmb));
+        localStorage.setItem('userTDEE', Math.round(tdee));
+        localStorage.setItem('pesoUsuario', peso); // <--- AGORA SALVA O PESO
+
+        // 2. Exibir Resultados
+        
+        // TMB (Arredondado para inteiro)
+        document.getElementById('tmbResult').textContent = `${Math.round(tmb).toLocaleString('pt-BR')} kcal`;
+        
+        // Gasto Calórico Total (TDEE)
+        document.getElementById('tdeeResult').textContent = `${Math.round(tdee).toLocaleString('pt-BR')} kcal`;
+        
+        // Mostra a área de resultado
+        document.getElementById('resultArea').style.display = 'block';
+
+        // Rolagem suave para o resultado
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'emagrecimento_setup.html' || pagina === 'nutritional_result.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Chamar Instrutor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 20px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        .content h2 {
+            color: #FF0000;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+        .content p {
+            color: #ccc;
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        /* ==================== GRID DE INSTRUTORES (CRIATIVIDADE) ==================== */
+        .instructor-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Uma coluna para mobile */
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .instructor-card {
+            background-color: #1f1f1f;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-left: 5px solid #FF0000; /* Linha de destaque */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .instructor-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #FFC107; /* Borda amarela para destaque */
+            margin-bottom: 10px;
+        }
+        .instructor-name {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .instructor-formacao {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        .details-grid {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-top: 1px dashed #333;
+            border-bottom: 1px dashed #333;
+        }
+        .detail-item {
+            font-size: 11px;
+            color: #999;
+        }
+        .detail-item strong {
+            display: block;
+            font-size: 14px;
+            color: #FF0000;
+        }
+        .specialty {
+            font-style: italic;
+            font-size: 14px;
+            color: #E0E0E0;
+            margin-bottom: 15px;
+        }
+        
+        /* Botão Chamar */
+        .btn-chamar {
+            width: 100%;
+            padding: 12px;
+            background-color: #00CC00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-chamar:hover {
+            background-color: #009900;
+        }
+    </style>
+</head>
+<body onload="renderInstructors()">
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="window.history.back()"></i>
+        <h1>Escolha seu Instrutor</h1>
+    </div>
+    
+    <div class="content">
+        <h2>Personal Experts EvoFit</h2>
+        <p>Selecione um instrutor especializado para receber ajuda imediata ou consultoria.</p>
+
+        <div class="instructor-grid" id="instructorGrid">
+            </div>
+    </div>
+
+
+<script>
+    // [1. DADOS FICTÍCIOS DOS INSTRUTORES]
+    const INSTRUTORES_DATA = [
+        {
+            nome: "Ana Carolina",
+            foto: "../assets/images/ana_carolina.jpg",
+            formacao: "Fisioterapia Esportiva",
+            tempo: "5 anos",
+            idade: 32,
+            especialidade: "Foco em recuperação de lesões e treino funcional.",
+            disponivel: true
+        },
+        {
+            nome: "Marcos Vinicius",
+            foto: "../assets/images/marcos_vinicius.jpg",
+            formacao: "Ed. Física (CREF)",
+            tempo: "8 anos",
+            idade: 41,
+            especialidade: "Especialista em ganho de força e condicionamento atlético.",
+            disponivel: true
+        },
+        {
+            nome: "Larissa Almeida",
+            foto: "../assets/images/larissa_almeida.jpg",
+            formacao: "Nutrição Esportiva",
+            tempo: "2 anos",
+            idade: 26,
+            especialidade: "Guia prática em definição corporal e Hipertrofia feminina.",
+            disponivel: false // Simulação de indisponibilidade
+        },
+        {
+            nome: "Thiago Oliveira",
+            foto: "../assets/images/thiago_oliveira.jpg",
+            formacao: "Pós-graduação em Biomecânica",
+            tempo: "10 anos",
+            idade: 45,
+            especialidade: "O mais experiente. Foco em correção de postura e treino de idosos.",
+            disponivel: true
+        },
+        {
+            nome: "Lucas Mendes",
+            foto: "../assets/images/lucas_mendes.jpg",
+            formacao: "Bacharelado em Ed. Física",
+            tempo: "3 anos",
+            idade: 28,
+            especialidade: "Motivador e especialista em treinos de alta intensidade (HIIT).",
+            disponivel: true
+        },
+    ];
+
+    // [2. FUNÇÃO DE RENDERIZAÇÃO]
+    function renderInstructors() {
+        const grid = document.getElementById('instructorGrid');
+        grid.innerHTML = ''; // Limpa o grid
+
+        INSTRUTORES_DATA.forEach(instrutor => {
+            const statusClass = instrutor.disponivel ? 'btn-chamar' : 'btn-chamar-disabled';
+            const statusText = instrutor.disponivel ? 'CHAMAR' : 'INDISPONÍVEL';
+            const buttonColor = instrutor.disponivel ? '#00CC00' : '#FF0000';
+            const cursorStyle = instrutor.disponivel ? 'cursor: pointer;' : 'cursor: not-allowed; opacity: 0.6;';
+            const action = instrutor.disponivel ? `chamarInstrutor('${instrutor.nome}')` : '';
+
+            const cardHTML = `
+                <div class="instructor-card">
+                    <img src="${instrutor.foto || 'avatar_placeholder.jpg'}" alt="Foto de ${instrutor.nome}" class="instructor-photo">
+                    <h3 class="instructor-name">${instrutor.nome}</h3>
+                    <p class="instructor-formacao">${instrutor.formacao}</p>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">Tempo: <strong>${instrutor.tempo}</strong></div>
+                        <div class="detail-item">Idade: <strong>${instrutor.idade}</strong></div>
+                    </div>
+
+                    <p class="specialty">${instrutor.especialidade}</p>
+
+                    <button class="${statusClass}" onclick="${action}" style="background-color: ${buttonColor}; ${cursorStyle}">
+                        ${statusText}
+                    </button>
+                </div>
+            `;
+            grid.innerHTML += cardHTML;
+        });
+    }
+
+    // [3. FUNÇÃO DE AÇÃO]
+    function chamarInstrutor(nomeInstrutor) {
+        alert(`Chamado enviado para ${nomeInstrutor}! Ele(a) está a caminho. Continue o treino.`);
+        
+        // Em um app real, aqui o sistema enviaria uma notificação PUSH
+        // para o tablet ou celular do instrutor.
+    }
+
+    // [4. FUNÇÕES DE NAVEGAÇÃO E UTILS]
+    function fazerLogout() {
+        if (confirm("Tem certeza que deseja sair?")) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            window.location.href = '../pages/login.html';
+        }
+    }
+
+    function redirecionar(pagina) {
+        window.location.href = pagina;
+    }
+    
+    window.onload = renderInstructors;
+</script>
+</body>
+</html>

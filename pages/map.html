@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Mapa Digital da Academia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 2px solid #FF0000;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #FF0000;
+        }
+
+        /* ==================== ÁREA DO MAPA (PLANTA BAIXA) ==================== */
+        .map-container {
+            position: relative;
+            width: 95%;
+            height: 600px; 
+            margin: 20px auto;
+            background-color: #fefefe; 
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+            overflow: hidden; 
+        }
+        
+        /* A Imagem da Planta como Fundo */
+        #planta-baixa {
+            width: 100%;
+            height: 100%;
+            /* NOME DA IMAGEM: A imagem que você forneceu */
+            background-image: url('../assets/images/image_9d8990.jpg'); 
+            background-size: contain; 
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
+        
+        /* Estilos dos Pontos de Interesse (Máquinas/Locais) */
+        .map-point {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            width: 80px; 
+            text-align: center;
+            color: #121212; 
+            transition: transform 0.2s;
+            transform: translate(-50%, -50%); /* Centraliza o ícone no ponto */
+        }
+        .map-point:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 10;
+        }
+        .point-icon {
+            font-size: 20px;
+            color: #FF0000; /* Vermelho EvoFit */
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #FF0000;
+            padding: 4px;
+            border-radius: 50%;
+            margin-bottom: 4px;
+        }
+        .point-icon.util {
+            color: #008800; /* Verde para utilidades */
+            border-color: #008800;
+        }
+        .point-name {
+            font-size: 10px;
+            color: #121212; 
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .map-point.dark-text .point-name {
+             color: #E0E0E0; 
+             background-color: rgba(18, 18, 18, 0.8);
+        }
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>MAPA DIGITAL</h1>
+    </div>
+
+    <div class="map-container">
+        <div id="planta-baixa">
+            <div class="map-point dark-text" style="top: 15%; left: 8%;" onclick="simularPonto('Recepção')">
+                <i class="fas fa-concierge-bell point-icon util"></i>
+                <span class="point-name">Recepção</span>
+            </div>
+
+            <div class="map-point" style="top: 30%; left: 8%;" onclick="simularPonto('Extensão de Perna')">
+                <i class="fas fa-dumbbell point-icon"></i>
+                <span class="point-name">Extensão de Perna</span>
+            </div>
+            <div class="map-point" style="top: 30%; left: 18%;" onclick="simularPonto('Flexão de Perna')">
+                <i class="fas fa-dumbbell point-icon"></i>
+                <span class="point-name">Flexão de Perna</span>
+            </div>
+            <div class="map-point" style="top: 45%; left: 8%;" onclick="simularPonto('Leg Press')">
+                <i class="fas fa-dumbbell point-icon"></i>
+                <span class="point-name">Leg Press</span>
+            </div>
+
+            <div class="map-point" style="top: 30%; left: 35%;" onclick="simularPonto('Supino Máquina')">
+                <i class="fas fa-weight-hanging point-icon"></i>
+                <span class="point-name">Supino Máquina</span>
+            </div>
+             <div class="map-point" style="top: 30%; left: 52%;" onclick="simularPonto('Peck Deck')">
+                <i class="fas fa-weight-hanging point-icon"></i>
+                <span class="point-name">Peck Deck</span>
+            </div>
+            
+            <div class="map-point" style="top: 30%; left: 65%;" onclick="simularPonto('Puxada Vertical')">
+                <i class="fas fa-sliders-h point-icon"></i>
+                <span class="point-name">Puxada Vertical</span>
+            </div>
+            <div class="map-point" style="top: 30%; left: 78%;" onclick="simularPonto('Remada Baixa')">
+                <i class="fas fa-sliders-h point-icon"></i>
+                <span class="point-name">Remada Baixa</span>
+            </div>
+           
+            <div class="map-point dark-text" style="top: 60%; left: 50%;" onclick="simularPonto('Esteiras')">
+                <i class="fas fa-running point-icon"></i>
+                <span class="point-name">Esteiras (Área Cardio)</span>
+            </div>
+            
+            <div class="map-point dark-text" style="top: 80%; left: 70%;" onclick="simularPonto('Banheiro Masculino')">
+                <i class="fas fa-male point-icon util"></i>
+                <span class="point-name">Banheiro Masculino</span>
+            </div>
+            <div class="map-point dark-text" style="top: 80%; left: 85%;" onclick="simularPonto('Banheiro Feminino')">
+                <i class="fas fa-female point-icon util"></i>
+                <span class="point-name">Banheiro Feminino</span>
+            </div>
+
+            <p style="position: absolute; bottom: 5px; right: 5px; font-size: 10px; color: #999;">Planta meramente ilustrativa</p>
+        </div>
+    </div>
+
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    // Função para simular o clique em um ponto do mapa
+    function simularPonto(nomePonto) {
+        alert(`Você clicou em: ${nomePonto}. Redirecionando para informações detalhadas ou chamando o instrutor mais próximo.`);
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    // Função unificada para redirecionar entre páginas principais
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'emagrecimento_setup.html' || pagina === 'timeframe_setup.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            // Simulação para sub-telas e configurações
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+
+    function fazerLogout() {
+        if (confirm("Tem certeza que deseja sair?")) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
+        }
+    }
+</script>
+</body>
+</html>

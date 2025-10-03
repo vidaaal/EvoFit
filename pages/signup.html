@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Criar Conta</title>
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; /* Fundo Escuro */
+            color: #E0E0E0; /* Texto Claro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            /* Adiciona o fundo da academia para manter o visual do Figma */
+            background-image: url('../assets/images/placeholder_gym_bg.jpg'); 
+            background-size: cover;
+            background-position: center;
+        }
+        /* Camada escura sobre a imagem para o texto ser legível */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Escurece o fundo */
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: rgba(30, 30, 30, 0.95); /* Semi-transparente para ver o fundo */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        /* ==================== LOGO E TÍTULO ==================== */
+        .logo-section {
+            margin-bottom: 20px;
+        }
+        
+        /* Ajuste do tamanho do logo para 120px */
+        #EvoFitLogo1 {
+            width: 120px;
+            height: auto;
+            margin-bottom: 5px; 
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .logo-section p {
+            color: #ccc;
+            font-size: 14px;
+        }
+        .logo-section h3 {
+             color: #E0E0E0;
+             font-size: 20px;
+             margin-top: 20px;
+        }
+
+        /* ==================== FORMULÁRIO E INPUTS ==================== */
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #2b2b2b;
+            color: #E0E0E0;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input::placeholder {
+            color: #777;
+        }
+
+        /* ==================== BOTÕES ==================== */
+        .btn-principal {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        /* Botão Criar e Acessar (Vermelho) */
+        #btnCriarAcessar {
+            background-color: #FF0000;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+        #btnCriarAcessar:hover {
+            background-color: #CC0000;
+        }
+        /* Botão Voltar para o Login (Secundário) */
+        #btnVoltarLogin {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #FF0000;
+            border: 2px solid #FF0000;
+            padding: 12px;
+        }
+        #btnVoltarLogin:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ==================== LINKS E ALERTAS ==================== */
+        .alerta {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none; /* Escondido por padrão */
+            background-color: #d8000c20;
+            color: #FF0000;
+            border: 1px solid #FF0000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-section">
+        <img src="../assets/images/EvoFit.png" id="EvoFitLogo1" alt="EvoFit Logo">
+        
+        <p>Treine sua mente e o seu corpo</p>
+        <h3>Crie sua conta</h3>
+    </div>
+
+    <div id="signupAlerta" class="alerta"></div>
+
+    <form id="signupForm">
+        <input type="text" id="nomeInput" placeholder="Nome" required>
+        <input type="email" id="emailInput" placeholder="E-mail" required>
+        <input type="password" id="senhaInput" placeholder="Senha" required>
+        <input type="password" id="confirmaSenhaInput" placeholder="Confirme a Senha" required>
+        
+        <button type="submit" id="btnCriarAcessar" class="btn-principal">Criar e acessar</button>
+    </form>
+    
+    <button id="btnVoltarLogin" class="btn-principal" onclick="window.location.href='login.html'">Voltar para o login</button>
+
+</div>
+
+<script>
+    const form = document.getElementById('signupForm');
+    const alerta = document.getElementById('signupAlerta');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const nome = document.getElementById('nomeInput').value.trim();
+        const email = document.getElementById('emailInput').value.trim();
+        const senha = document.getElementById('senhaInput').value;
+        const confirmaSenha = document.getElementById('confirmaSenhaInput').value;
+
+        // 1. Validação simples de preenchimento
+        if (nome === "" || email === "" || senha === "" || confirmaSenha === "") {
+            mostrarAlerta("Por favor, preencha todos os campos.", 'error');
+            return;
+        }
+        
+        // 2. Validação de confirmação de senha
+        if (senha !== confirmaSenha) {
+            mostrarAlerta("As senhas não coincidem. Verifique.", 'error');
+            return;
+        }
+        
+        // 3. Simulação de cadastro bem-sucedido
+        
+        mostrarAlerta("Conta criada com sucesso! Redirecionando...", 'success');
+        
+        // ***** ESSENCIAL: Salva nome, e-mail e SENHA para o login persistente *****
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', nome); 
+        localStorage.setItem('userPassword', senha); // AGORA SALVA A SENHA
+
+        // Redireciona para a tela Home simulada
+        setTimeout(() => {
+            window.location.href = '../index.html'; 
+        }, 1500); 
+    });
+
+    function mostrarAlerta(mensagem, tipo) {
+        alerta.textContent = mensagem;
+        if (tipo === 'error') {
+            alerta.style.backgroundColor = '#d8000c20';
+            alerta.style.color = '#FF0000';
+            alerta.style.border = '1px solid #FF0000';
+        } else if (tipo === 'success') {
+            alerta.style.backgroundColor = '#00CC0020';
+            alerta.style.color = '#00CC00';
+            alerta.style.border = '1px solid #00CC00';
+        }
+        alerta.style.display = 'block';
+    }
+
+</script>
+</body>
+</html>

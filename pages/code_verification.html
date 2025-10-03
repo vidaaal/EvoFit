@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Verificação de Código</title>
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px; 
+            background-color: #1e1e1e; 
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        
+        /* ==================== TÍTULO E SUBTÍTULO ==================== */
+        .header-text h1 {
+            font-size: 24px;
+            color: white;
+            margin: 0 0 10px 0;
+        }
+        .header-text p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        /* Cor de destaque para o e-mail/telefone (simulado) */
+        .highlight-target {
+            color: #FFC107; 
+            font-weight: bold;
+        }
+
+        /* ==================== INPUTS DO CÓDIGO (OTP) ==================== */
+        .code-input-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .code-input {
+            width: 60px; /* Largura para cada caixa */
+            height: 60px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background-color: #2b2b2b;
+            color: #FF0000;
+            caret-color: #FF0000; /* Cursor vermelho */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .code-input:focus {
+            border-color: #FF0000; /* Borda vermelha no foco */
+            box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+        }
+        /* Remove setas de número em inputs */
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .code-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* ==================== BOTÃO PRINCIPAL ==================== */
+        #btnVerificar {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #FF0000;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+            transition: background-color 0.3s;
+        }
+        #btnVerificar:hover {
+            background-color: #CC0000;
+        }
+        
+        /* ==================== LINKS E ALERTAS ==================== */
+        .links-inferiores {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #999;
+        }
+        .links-inferiores a {
+            color: #FF0000;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .alerta {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none; 
+            text-align: left;
+        }
+        .alerta.error {
+            background-color: #d8000c20;
+            color: #FF0000;
+            border: 1px solid #FF0000;
+        }
+        .alerta.success {
+            background-color: #00CC0020;
+            color: #00CC00;
+            border: 1px solid #00CC00;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-text">
+        <h1>Verificação de Código</h1>
+        <p>Insira o código de 4 dígitos enviado para o seu e-mail/telefone (<span class="highlight-target">teste@evofit.com</span>).</p>
+        <p style="font-size: 12px; color: #FFC107; margin-top: -15px;">(Simulação: O código é <span class="highlight-target">1234</span>)</p>
+    </div>
+
+    <div id="verifyAlerta" class="alerta"></div>
+
+    <form id="verificationForm">
+        
+        <div class="code-input-group">
+            <input type="number" class="code-input" id="code1" maxlength="1" required autofocus>
+            <input type="number" class="code-input" id="code2" maxlength="1" required>
+            <input type="number" class="code-input" id="code3" maxlength="1" required>
+            <input type="number" class="code-input" id="code4" maxlength="1" required>
+        </div>
+        
+        <button type="submit" id="btnVerificar">Verificar</button>
+    </form>
+    
+    <div class="links-inferiores">
+        Não recebeu o código? 
+        <a href="#" onclick="simularReenvio()">Reenviar em 60s</a>
+    </div>
+
+</div>
+
+<script>
+    const form = document.getElementById('verificationForm');
+    const alerta = document.getElementById('verifyAlerta');
+    const codeInputs = document.querySelectorAll('.code-input');
+    
+    // O código secreto para a simulação (4 dígitos)
+    const SECRET_CODE = "1234"; 
+
+    // Função para mover o foco automaticamente para o próximo campo
+    codeInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            // Garante que só um dígito seja aceito
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1);
+            }
+            // Move o foco para o próximo campo se for preenchido
+            if (e.target.value.length === 1 && index < codeInputs.length - 1) {
+                codeInputs[index + 1].focus();
+            }
+        });
+
+        // Lidar com o Backspace para ir para o campo anterior
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                codeInputs[index - 1].focus();
+            }
+        });
+    });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+
+        if (enteredCode.length !== 4) {
+            mostrarAlerta("Por favor, insira o código completo de 4 dígitos.", 'error');
+            return;
+        }
+
+        if (enteredCode === SECRET_CODE) {
+            mostrarAlerta("Código verificado com sucesso! Prosseguindo para nova senha...", 'success');
+            
+            // Em um app real, o servidor criaria um token de redefinição aqui.
+            // Aqui, simulamos o redirecionamento para a tela de nova senha.
+            
+            setTimeout(() => {
+                // Redireciona para a próxima etapa: criar a nova senha
+                window.location.href = 'new_password.html'; 
+            }, 1500); 
+
+        } else {
+            mostrarAlerta("Código inválido. Por favor, tente novamente.", 'error');
+        }
+    });
+
+    function mostrarAlerta(mensagem, tipo) {
+        alerta.textContent = mensagem;
+        alerta.className = `alerta ${tipo}`;
+        alerta.style.display = 'block';
+    }
+    
+    function simularReenvio() {
+        alert("Simulação: O código foi reenviado para o seu e-mail/telefone.");
+        // Em um projeto real, aqui você reativaria o contador e faria uma nova chamada API.
+    }
+</script>
+</body>
+</html>

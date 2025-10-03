@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Guia Nutricional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h2 {
+            color: #FF0000;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        .alert-tmb {
+            background-color: #FF000030; /* Fundo vermelho translúcido para erro */
+            color: #FF0000;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            cursor: pointer;
+            border: 1px solid #FF0000;
+        }
+
+        /* ==================== GRID DE METAS E NOVO CARD ==================== */
+        .goals-grid {
+            display: flex;
+            flex-direction: column; 
+            gap: 40px; 
+            align-items: center;
+        }
+        
+        .card {
+            position: relative;
+            width: 280px; 
+            height: 120px;
+            color: #fff;
+            transition: 0.5s;
+            cursor: pointer;
+            text-decoration: none; 
+            display: block;
+            text-align: center; 
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .card::before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(45deg, #FF0000, #800000); 
+            border-radius: 1.2em;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FF0000, #800000);
+            filter: blur(20px); 
+        }
+        .card span {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            background-color: #1f1f1f; 
+            z-index: 2;
+            border-radius: 1em;
+        }
+        .card span::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        .card .content {
+            position: relative;
+            padding: 10px;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700; 
+            font-size: 16px; 
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .card .content i {
+            font-size: 26px; 
+            margin-bottom: 5px;
+        }
+        .card .content p {
+             font-size: 11px; 
+             font-weight: 300;
+             margin: 0;
+             padding: 0 5px; 
+             text-transform: none;
+        }
+
+        /* ==================== NOVO ESTILO NEOMORPHISM ==================== */
+        .btn-recalculate {
+            color: #E0E0E0;
+            padding: 0.7em 1.7em;
+            font-size: 16px;
+            border-radius: 0.5em;
+            background: #1f1f1f; 
+            cursor: pointer;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            box-shadow: 4px 4px 10px #0a0a0a, -4px -4px 10px #2a2a2a; 
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 280px;
+            margin-top: 30px;
+        }
+
+        .btn-recalculate:hover {
+            border: 1px solid #FF0000; 
+        }
+
+        .btn-recalculate:active {
+            box-shadow: inset 2px 2px 5px #0a0a0a, inset -2px -2px 5px #2a2a2a; 
+        }
+
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+    </style>
+</head>
+<body onload="inicializarMetas()">
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="redirecionar('../index.html')"></i>
+        <h1>Guia Nutricional</h1>
+    </div>
+    
+    <div class="content">
+        <h2>Defina Seu Objetivo Principal</h2>
+        <p>A nutrição é 80% do resultado. Escolha sua meta para calcularmos suas calorias.</p>
+
+        <div id="tmbAlert" class="alert-tmb" onclick="redirecionar('tmb_calculator.html')">
+            <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+            Atenção: Seu TMB/TDEE não foi calculado. Toque aqui para calcular e usar as metas.
+        </div>
+
+        <div class="goals-grid">
+
+            <a href="#" class="card" onclick="redirecionarParaSetup('hipertrofia')">
+                <span></span>
+                <div class="content">
+                    <i class="fas fa-dumbbell"></i>
+                    GANHO DE MASSA MUSCULAR
+                    <p>Foco: Aumento de Músculos e Força</p>
+                </div>
+            </a>
+
+            <a href="#" class="card" onclick="redirecionarParaSetup('emagrecimento')">
+                <span></span>
+                <div class="content">
+                    <i class="fas fa-burn"></i>
+                    PERDA DE PESO
+                    <p>Foco: Redução de Gordura Corporal</p>
+                </div>
+            </a>
+
+            <a href="#" class="card" onclick="redirecionarParaSetup('resistencia')">
+                <span></span>
+                <div class="content">
+                    <i class="fas fa-running"></i>
+                    RESISTÊNCIA E CONDICIONAMENTO
+                    <p>Foco: Capacidade Cardiovascular e Disposição</p>
+                </div>
+            </a>
+            
+            <button class="btn-recalculate" onclick="redirecionar('tmb_calculator.html')">
+                <i class="fas fa-calculator" style="margin-right: 10px;"></i>
+                RECALCULAR TMB E DADOS
+            </button>
+
+        </div> </div> <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    
+    // Relação Caloria/Grama dos Macronutrientes (Padrão científico)
+    const KCAL_POR_GRAMA = {
+        proteina: 4,
+        carboidrato: 4,
+        gordura: 9
+    };
+
+    // Fatores de Ajuste para Metas (Baseado no TDEE)
+    const FATOR_METAS = {
+        hipertrofia: {
+            ajuste: 1.15, // Superávit de 15%
+            proteina_percent: 30, 
+            carboidrato_percent: 50, 
+            gordura_percent: 20
+        },
+        emagrecimento: {
+            ajuste: 0.80, // Valor padrão de ajuste base, mas será ignorado no fluxo real de emagrecimento
+            proteina_percent: 35, 
+            carboidrato_percent: 40, 
+            gordura_percent: 25
+        },
+        resistencia: {
+            ajuste: 1.05, // Leve superávit (5%)
+            proteina_percent: 25, 
+            carboidrato_percent: 55, 
+            gordura_percent: 20
+        }
+    };
+    
+    function calcularMacros(tdee, meta) {
+        const fator = FATOR_METAS[meta];
+        const caloriasAjustadas = tdee * fator.ajuste;
+        
+        // 1. Cálculo das Calorias por Macro
+        const kcalProteina = caloriasAjustadas * (fator.proteina_percent / 100);
+        const kcalCarboidrato = caloriasAjustadas * (fator.carboidrato_percent / 100);
+        const kcalGordura = caloriasAjustadas * (fator.gordura_percent / 100);
+        
+        // 2. Conversão de Calorias para Gramas
+        const gProteina = Math.round(kcalProteina / KCAL_POR_GRAMA.proteina);
+        const gCarboidrato = Math.round(kcalCarboidrato / KCAL_POR_GRAMA.carboidrato);
+        const gGordura = Math.round(kcalGordura / KCAL_POR_GRAMA.gordura);
+
+        return {
+            calorias: Math.round(caloriasAjustadas),
+            proteina: gProteina,
+            carboidrato: gCarboidrato,
+            gordura: gGordura
+        };
+    }
+    
+    // FUNÇÃO CORRIGIDA: Implementa a lógica para pular a tela de meses na meta 'resistencia'
+    function redirecionarParaSetup(meta) {
+        const userTDEE = parseInt(localStorage.getItem('userTDEE'));
+        const userPeso = parseFloat(localStorage.getItem('pesoUsuario'));
+        const tmbAlert = document.getElementById('tmbAlert');
+
+        // VERIFICAÇÃO ESSENCIAL: Se TDEE ou Peso não foram calculados, bloqueia e avisa.
+        if (isNaN(userTDEE) || userTDEE <= 0 || isNaN(userPeso) || userPeso <= 0) {
+            tmbAlert.textContent = "ERRO: Calcule seu TMB/TDEE e Peso primeiro.";
+            tmbAlert.style.display = 'block';
+            tmbAlert.style.color = '#FF0000';
+            
+            alert("Atenção! Você precisa calcular sua Taxa Metabólica Diária (TDEE) e Peso antes de definir metas nutricionais. Você será redirecionado para a calculadora.");
+            
+            redirecionar('tmb_calculator.html');
+            return;
+        }
+
+        // Se TDEE foi calculado, armazena a meta.
+        localStorage.setItem('nutritionalGoal', meta);
+        
+        // Redireciona para a página de setup específica
+        if (meta === 'emagrecimento') {
+             window.location.href = 'emagrecimento_setup.html';
+        } else if (meta === 'hipertrofia') {
+             // Hipertrofia ainda usa o setup de prazo
+             window.location.href = 'timeframe_setup.html'; 
+        } else if (meta === 'resistencia') {
+            
+            // FLUXO RESISTÊNCIA: Pula o setup de prazo e calcula os macros direto
+            const macros = calcularMacros(userTDEE, meta);
+            
+            // Salva o resultado no localStorage
+            localStorage.setItem('nutritionalResults', JSON.stringify(macros));
+            localStorage.setItem('goalTimeframeMonths', 3); // Prazo padrão
+            
+            // Meta de água (35ml por Kg do usuário)
+            const mlAgua = Math.round(userPeso * 35);
+            const LAgua = mlAgua / 1000;
+            localStorage.setItem('goal_agua', LAgua.toFixed(1)); 
+
+            // Redireciona para a tela de resultado
+            window.location.href = 'nutritional_result.html';
+        }
+    }
+    
+    // ================= FUNÇÕES DE INICIALIZAÇÃO =================
+    
+    function inicializarMetas() {
+        const userTDEE = localStorage.getItem('userTDEE');
+        const tmbAlert = document.getElementById('tmbAlert');
+
+        if (userTDEE) {
+            tmbAlert.style.display = 'none';
+        } else {
+            tmbAlert.style.display = 'block';
+            tmbAlert.textContent = "Atenção: Seu TMB não foi calculado. Toque aqui para calcular e usar as metas.";
+            tmbAlert.style.color = '#FFC107';
+        }
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'nutritional_result.html' || pagina === 'emagrecimento_setup.html' || pagina === 'timeframe_setup.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+    
+    window.onload = inicializarMetas;
+</script>
+</body>
+</html>

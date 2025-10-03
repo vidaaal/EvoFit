@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Setup Emagrecimento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Estilos base (Dark Mode) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .content h2 {
+            color: #00CC00; /* Verde para Emagrecimento */
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            color: #ccc;
+            margin-bottom: 40px;
+            font-size: 16px;
+            max-width: 300px;
+        }
+
+        /* Estilos do formulário e input */
+        .form-group {
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #E0E0E0;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #1f1f1f;
+            color: #E0E0E0;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        /* Estilo do botão de Ação (Confirmar) */
+        .btn-confirm {
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 10px;
+            background-color: #FF0000;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 100%;
+            max-width: 320px;
+            margin-top: 20px;
+        }
+
+        .btn-confirm:hover {
+            background-color: #e60000;
+        }
+        .warning {
+            color: #FFC107;
+            font-size: 14px;
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="redirecionar('nutrition_goals.html')"></i>
+        <h1>Configuração de Emagrecimento</h1>
+    </div>
+    
+    <div class="content">
+        <h2>Seu Desafio: Perda de Peso</h2>
+        <p>Defina seu objetivo e prazo para criarmos o déficit calórico ideal.</p>
+
+        <form id="emagrecimentoForm">
+            <div class="form-group">
+                <label for="perdaKg">Quanto peso deseja perder (Kg):</label>
+                <input type="number" id="perdaKg" step="0.5" min="1" placeholder="Mínimo 1 Kg" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="timeframe">Prazo (Mínimo 3 Meses):</label>
+                <select id="timeframe" required>
+                    <option value="" disabled selected>Selecione o Prazo</option>
+                    <option value="3">3 Meses</option>
+                    <option value="4">4 Meses</option>
+                    <option value="6">6 Meses</option>
+                    <option value="9">9 Meses</option>
+                    <option value="12">12 Meses (1 Ano)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-confirm">VER MEU PLANO DE MACROS</button>
+        </form>
+
+    </div> 
+
+<script>
+    // Fatores de Ajuste (Copiados)
+    const KCAL_POR_GRAMA = { proteina: 4, carboidrato: 4, gordura: 9 };
+    const FATOR_METAS = {
+        hipertrofia: { ajuste: 1.15, proteina_percent: 30, carboidrato_percent: 50, gordura_percent: 20 },
+        emagrecimento: { ajuste: 0.80, proteina_percent: 35, carboidrato_percent: 40, gordura_percent: 25 },
+        resistencia: { ajuste: 1.05, proteina_percent: 25, carboidrato_percent: 55, gordura_percent: 20 }
+    };
+    
+    // Lógica de Cálculo (Copiada do nutrition_goals.html)
+    function calcularMacros(tdee, meta) {
+        const fator = FATOR_METAS[meta];
+        const caloriasAjustadas = tdee * fator.ajuste;
+        
+        const kcalProteina = caloriasAjustadas * (fator.proteina_percent / 100);
+        const kcalCarboidrato = caloriasAjustadas * (fator.carboidrato_percent / 100);
+        const kcalGordura = caloriasAjustadas * (fator.gordura_percent / 100);
+        
+        const gProteina = Math.round(kcalProteina / KCAL_POR_GRAMA.proteina);
+        const gCarboidrato = Math.round(kcalCarboidrato / KCAL_POR_GRAMA.carboidrato);
+        const gGordura = Math.round(kcalGordura / KCAL_POR_GRAMA.gordura);
+
+        return {
+            calorias: Math.round(caloriasAjustadas),
+            proteina: gProteina,
+            carboidrato: gCarboidrato,
+            gordura: gGordura
+        };
+    }
+    
+    // ================= LÓGICA DE PRAZO E REDIRECIONAMENTO =================
+    
+    document.getElementById('emagrecimentoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        confirmarSetup();
+    });
+
+    function confirmarSetup() {
+        const userTDEE = parseInt(localStorage.getItem('userTDEE'));
+        const pesoAtual = parseFloat(localStorage.getItem('pesoUsuario')); // Puxa o peso salvo na calculadora TMB
+        const meta = localStorage.getItem('nutritionalGoal'); // Deve ser 'emagrecimento'
+        
+        const perdaKg = parseFloat(document.getElementById('perdaKg').value);
+        const timeframe = parseInt(document.getElementById('timeframe').value);
+
+        if (!perdaKg || perdaKg < 1) {
+            alert("Por favor, insira uma meta de perda de peso válida (mínimo 1 Kg).");
+            return;
+        }
+
+        // Se o peso atual não foi salvo (o usuário não usou a calculadora TMB)
+        if (isNaN(pesoAtual)) {
+            alert("Erro: Não encontramos seu peso. Por favor, calcule o TMB novamente.");
+            redirecionar('tmb_calculator.html');
+            return;
+        }
+
+        // 1. Cálculo do Déficit Calórico Total (7700 kcal por 1kg de gordura)
+        const kcalsPorKg = 7700;
+        const totalDeficitKcal = perdaKg * kcalsPorKg;
+        
+        // 2. Cálculo do Déficit Diário Necessário (para fins de informação e validação)
+        const dias = timeframe * 30.4375; // Média de dias por mês
+        const deficitDiario = Math.round(totalDeficitKcal / dias);
+        
+        // 3. Validação de Déficit Extremo (ex: não perder mais que 1kg por semana)
+        if (deficitDiario > 1000) {
+            alert(`Atenção: A meta de perder ${perdaKg}kg em ${timeframe} meses exige um déficit diário de ${deficitDiario} kcal. Isso é muito agressivo e pode ser insustentável. Sugerimos um prazo maior.`);
+            // A meta ainda será salva, mas o alerta orienta o usuário.
+        }
+
+        // 4. Calcular os macros com o fator normal de emagrecimento (ajuste: 0.80)
+        const resultados = calcularMacros(userTDEE, meta);
+        
+        // 5. Armazenar os resultados, prazo e métricas de déficit/água
+        localStorage.setItem('nutritionalResults', JSON.stringify(resultados));
+        localStorage.setItem('goalTimeframeMonths', timeframe); 
+        localStorage.setItem('pesoMeta', perdaKg);
+        localStorage.setItem('deficitDiario', deficitDiario);
+
+        // 6. Redirecionar para a tela final de resultados
+        window.location.href = 'nutritional_result.html'; 
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'nutritional_result.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+</script>
+</body>
+</html>

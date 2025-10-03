@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Acessar Conta</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            /* Adiciona o fundo da academia para manter o visual do Figma */
+            background-image: url('../assets/images/../assets/images/placeholder_gym_bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Camada escura sobre a imagem para o texto ser legível */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Escurece o fundo */
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* Largura padrão de tela de celular */
+            background-color: rgba(30, 30, 30, 0.95); /* Semi-transparente */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        /* ==================== LOGO E TÍTULO ==================== */
+        .logo-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+        
+        /* Ajuste do tamanho do logo para 120px */
+        #EvoFitLogo1 {
+            width: 120px;
+            height: auto;
+            margin-bottom: 5px; 
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .logo-section p {
+            color: #ccc;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* ==================== FORMULÁRIO E INPUTS ==================== */
+        
+        /* Contêiner da Senha */
+        .password-container {
+            position: relative;
+            margin-bottom: 15px; /* Ajusta a margem para caber a senha/olho */
+        }
+
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #2b2b2b;
+            color: #E0E0E0;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input::placeholder {
+            color: #777;
+        }
+        
+        /* Espaço para o Ícone */
+        input#senhaInput, input[type="text"]#senhaInput {
+            padding-right: 45px;
+        }
+
+        /* Estilo do Olho (toggle) */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%; /* Centraliza verticalmente */
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #FF0000;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+
+        /* ==================== BOTÕES ==================== */
+        .btn-principal {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        /* Botão Acessar (Vermelho) */
+        #btnAcessar {
+            background-color: #FF0000;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+        }
+        #btnAcessar:hover {
+            background-color: #CC0000;
+        }
+        /* Botão Secundário (Criar Conta - Outline) */
+        #btnCriarConta {
+            background-color: transparent;
+            color: #FF0000;
+            border: 2px solid #FF0000;
+            margin-top: 20px;
+        }
+        #btnCriarConta:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+        /* ==================== LINKS E ALERTAS ==================== */
+        .link-esqueceu {
+            display: block;
+            text-align: right;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #999;
+            text-decoration: none;
+        }
+        .link-esqueceu:hover {
+            color: #FF0000;
+        }
+        .alerta {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none; 
+            background-color: #d8000c20;
+            color: #FF0000;
+            border: 1px solid #FF0000;
+        }
+        
+        /* Estilos para os ícones sociais */
+        .social-login {
+             margin-top: 15px;
+             display: flex;
+             justify-content: center;
+             gap: 30px;
+        }
+        .social-icon-link {
+            font-size: 30px; 
+            text-decoration: none;
+            transition: transform 0.2s;
+            cursor: pointer; /* Garante que pareça clicável */
+        }
+        .social-icon-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* ==================== CSS DA BARRA DE NAVEGAÇÃO INFERIOR (Oculta) ==================== */
+        .nav-bar {
+            display: none; 
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-section">
+        <img src="../assets/images/EvoFit.png" id="EvoFitLogo1" alt="EvoFit Logo">
+        <p>Aplique sua conta!</p>
+    </div>
+
+    <div id="loginAlerta" class="alerta"></div>
+
+    <form id="loginForm">
+        <input type="email" id="emailInput" placeholder="E-mail" required>
+        
+        <div class="password-container">
+            <input type="password" id="senhaInput" placeholder="Senha" required>
+            <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('senhaInput')"></i>
+        </div>
+        
+        <a href="#" class="link-esqueceu" onclick="redirecionar('reset_password.html')">Esqueceu a senha?</a>
+
+        <button type="submit" id="btnAcessar" class="btn-principal">Acessar</button>
+    </form>
+    
+    <button id="btnCriarConta" class="btn-principal" onclick="redirecionar('signup.html')">Criar conta</button>
+    
+    <p style="margin-top: 30px; color: #555;">Cadastre-se com</p>
+
+    <div class="social-login">
+        <a href="#" class="social-icon-link" style="color: #4285F4;" onclick="simularLoginSocial('Google')"><i class="fab fa-google"></i></a>
+        <a href="#" class="social-icon-link" style="color: #1877F2;" onclick="simularLoginSocial('Facebook')"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="social-icon-link" style="color: #0077B5;" onclick="simularLoginSocial('LinkedIn')"><i class="fab fa-linkedin"></i></a>
+    </div>
+
+</div>
+
+<div class="nav-bar">
+    <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="#" class="nav-item" onclick="redirecionar('nutrition_goals.html')">
+        <i class="fas fa-apple-alt"></i>
+        <span>Nutrição</span>
+    </a>
+    <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+        <i class="fas fa-medal"></i>
+        <span>Pontos</span>
+    </a>
+    <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+        <i class="fas fa-qrcode"></i>
+        <span>Escanear</span>
+    </a>
+    <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>Mapa</span>
+    </a>
+    <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+        <i class="fas fa-user"></i>
+        <span>Perfil</span>
+    </a
+</div>
+
+<script>
+    const form = document.getElementById('loginForm');
+    const alerta = document.getElementById('loginAlerta');
+
+    // Função para alternar a visibilidade da senha
+    function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const container = input.parentElement; 
+        const icon = container.querySelector('.toggle-password'); 
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Simula o login social
+    function simularLoginSocial(provider) {
+        mostrarAlerta(`Simulação: Iniciando login com ${provider}...`, 'success');
+        
+        // Simulação de login bem-sucedido
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', `usuario_${provider.toLowerCase()}@login.com`);
+        localStorage.setItem('userName', `Usuário ${provider}`);
+
+        setTimeout(() => {
+            window.location.href = '../index.html'; 
+        }, 1500); 
+    }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const email = document.getElementById('emailInput').value.trim();
+        const senha = document.getElementById('senhaInput').value; // Valor lido do input
+
+        if (email === "" || senha === "") {
+            mostrarAlerta("Por favor, preencha todos os campos.", 'error');
+            return;
+        }
+
+        // --- LÓGICA DE LOGIN: PRIORIZAÇÃO DA SENHA SALVA ---
+        
+        let usuarioEncontrado = null;
+
+        const storedEmail = localStorage.getItem('userEmail');
+        const storedPassword = localStorage.getItem('userPassword'); 
+        const storedName = localStorage.getItem('userName');
+
+        // VERIFICAÇÃO CRÍTICA: Se o e-mail coincide com o último salvo E a senha coincide.
+        if (email === storedEmail && senha === storedPassword) { 
+            usuarioEncontrado = { email: storedEmail, senha: storedPassword, nome: storedName };
+        }
+        
+        // --- RESULTADO ---
+        if (usuarioEncontrado) {
+            mostrarAlerta("Acesso concedido! Redirecionando...", 'success');
+            
+            // Armazena dados essenciais para persistência da sessão
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userEmail', usuarioEncontrado.email);
+            localStorage.setItem('userName', usuarioEncontrado.nome);
+
+            // Redireciona para a tela Home
+            setTimeout(() => {
+                window.location.href = '../index.html'; 
+            }, 1500);
+
+        } else {
+            // Manteve o erro da imagem
+            mostrarAlerta("E-mail ou senha inválidos. Tente novamente.", 'error');
+        }
+    });
+
+    function mostrarAlerta(mensagem, tipo) {
+        alerta.textContent = mensagem;
+        if (tipo === 'error') {
+            alerta.style.backgroundColor = '#d8000c20';
+            alerta.style.color = '#FF0000';
+            alerta.style.border = '1px solid #FF0000';
+        } else if (tipo === 'success') {
+            alerta.style.backgroundColor = '#00CC0020';
+            alarta.style.color = '#00CC00';
+            alerta.style.border = '1px solid #00CC00';
+        }
+        alerta.style.display = 'block';
+    }
+    
+    // Função unificada para redirecionar entre páginas principais
+    function redirecionar(pagina) {
+        window.location.href = pagina;
+    }
+
+</script>
+</body>
+</html>

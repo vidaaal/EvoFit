@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Pontos e Recompensas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            padding: 25px 20px 15px;
+            background-color: #1f1f1f;
+            border-bottom: 1px solid #333;
+        }
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            color: #FF0000;
+        }
+        .header p {
+            margin: 0;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* ==================== PLACAR DE PONTOS ==================== */
+        .score-card {
+            background: linear-gradient(145deg, #1f1f1f, #2b2b2b); /* Fundo com leve gradiente */
+            margin: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+        .score-card h2 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #FFC107; /* Amarelo para destacar pontos */
+        }
+        .score-card h3 {
+            font-size: 48px;
+            margin: 0 0 15px 0;
+            color: white;
+            font-weight: 800;
+        }
+
+        /* ==================== BARRA DE PROGRESSO (INOVAÇÃO) ==================== */
+        .progress-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .progress-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar {
+            background-color: #333;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 60%; /* Valor inicial de progresso */
+            background-color: #FF0000; /* Cor Vermelha de Progresso */
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* ==================== MISSÕES ATIVAS ==================== */
+        .mission-section {
+            padding: 0 20px;
+        }
+        .mission-section h3 {
+            font-size: 18px;
+            color: #E0E0E0;
+            margin-bottom: 15px;
+            border-left: 3px solid #FF0000;
+            padding-left: 10px;
+        }
+        .mission-item {
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mission-status i {
+            font-size: 20px;
+        }
+        .status-pending {
+            color: #FFC107; /* Amarelo: pendente */
+        }
+        .status-complete {
+            color: #00CC00; /* Verde: concluído */
+        }
+        .mission-details h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .mission-details p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ==================== LOJA DE RECOMPENSAS ==================== */
+        .rewards-section {
+            padding: 0 20px;
+            margin-top: 30px;
+        }
+        .rewards-section h3 {
+             font-size: 18px;
+            color: #E0E0E0;
+            margin-bottom: 15px;
+            border-left: 3px solid #FF0000;
+            padding-left: 10px;
+        }
+        .reward-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas */
+            gap: 15px;
+        }
+        .reward-item {
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.2s;
+        }
+        .reward-item:hover {
+            transform: translateY(-5px);
+            border-color: #FFC107;
+        }
+        .reward-item i {
+            font-size: 30px;
+            color: #FFC107;
+            margin-bottom: 10px;
+        }
+        .reward-item p {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .reward-item span {
+            font-size: 12px;
+            color: #FF0000; /* Custo em vermelho */
+        }
+
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR - 6 Ícones ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+
+    </style>
+</head>
+<body onload="inicializarGamificacao()">
+
+    <div class="header">
+        <h1>Pontos EvoFit</h1>
+        <p>Sua jornada de motivação e recompensas.</p>
+    </div>
+
+    <div class="score-card">
+        <h2>Seu Saldo Atual</h2>
+        <h3 id="currentScore">1250</h3>
+        
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Próxima Recompensa: Coqueteleira EvoFit (2000 Pontos)</span>
+                <span id="progressPercentage">62.5%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mission-section">
+        <h3>Missões Ativas</h3>
+        
+        <div class="mission-item">
+            <div class="mission-details">
+                <h4>Corra 1km no mês</h4>
+                <p>Progresso: 0.8km / 1km (Ganha +500 pontos)</p>
+            </div>
+            <div class="mission-status status-pending">
+                <i class="fas fa-running"></i>
+            </div>
+        </div>
+        
+        <div class="mission-item">
+            <div class="mission-details">
+                <h4>Frequência (4/5 vezes)</h4>
+                <p>Complete 5 check-ins esta semana (Ganha +300 pontos)</p>
+            </div>
+            <div class="mission-status status-pending">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        
+        <div class="mission-item">
+            <div class="mission-details">
+                <h4>Treino de Bíceps</h4>
+                <p>Complete todos os exercícios de Bíceps (Ganha +150 pontos)</p>
+            </div>
+            <div class="mission-status status-complete">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="rewards-section">
+        <h3>Loja de Recompensas</h3>
+        
+        <div class="reward-grid">
+            <div class="reward-item">
+                <i class="fas fa-tint"></i>
+                <p>Coqueteleira EvoFit</p>
+                <span>2000 Pontos</span>
+            </div>
+            <div class="reward-item">
+                <i class="fas fa-tshirt"></i>
+                <p>Camiseta EvoFit</p>
+                <span>3500 Pontos</span>
+            </div>
+            <div class="reward-item">
+                <i class="fas fa-ticket-alt"></i>
+                <p>1 Mês Grátis</p>
+                <span>7500 Pontos</span>
+            </div>
+            <div class="reward-item">
+                <i class="fas fa-dumbbell"></i>
+                <p>Acessoria Personalizada</p>
+                <span>5000 Pontos</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    // Configuração dos pontos e progresso
+    const PONTOS_ATUAIS = 1250;
+    const META_PONTOS = 2000;
+
+    function inicializarGamificacao() {
+        // Calcula a porcentagem do progresso
+        const percent = (PONTOS_ATUAIS / META_PONTOS) * 100;
+        
+        // Atualiza a barra de progresso visualmente
+        document.getElementById('progressFill').style.width = `${Math.min(percent, 100)}%`;
+        document.getElementById('progressPercentage').textContent = `${Math.floor(percent)}%`;
+        document.getElementById('currentScore').textContent = PONTOS_ATUAIS.toLocaleString('pt-BR');
+    }
+    
+    // Função unificada para redirecionar entre páginas principais
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            // Simulação para sub-telas e configurações
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+
+    window.onload = inicializarGamificacao;
+
+</script>
+</body>
+</html>

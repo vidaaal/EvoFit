@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Seu Plano Nutricional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* [ ... CSS base (inalterado) ... ] */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* CARD PRINCIPAL */
+        .result-card {
+            background: linear-gradient(145deg, #1f1f1f, #2b2b2b);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+        .result-card h2 {
+            font-size: 24px;
+            color: #FF0000;
+            margin: 0 0 5px 0;
+        }
+        .result-card p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* DASHBOARD DE MACROS */
+        .macros-dashboard {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .macro-item {
+            width: 30%;
+            background-color: #1f1f1f;
+            padding: 15px 5px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        .macro-item h3 {
+            font-size: 32px;
+            color: #FFC107; /* Gramas */
+            margin: 0;
+        }
+        .macro-item span {
+            font-size: 12px;
+            color: white;
+            display: block;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* RESUMO CALÓRICO */
+        .calorie-summary {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #2b2b2b;
+            border-radius: 10px;
+        }
+        .calorie-summary h4 {
+            color: #E0E0E0;
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        .calorie-summary .total {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF0000;
+        }
+
+        /* MÉTRICAS DE EMAGRECIMENTO (NOVO) */
+        .emagrecimento-metrics {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .metric-box {
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #FFC10750;
+        }
+        .metric-box i {
+            color: #66CCFF;
+            margin-right: 5px;
+        }
+        .metric-box h4 {
+            font-size: 14px;
+            color: #FFC107;
+            margin-top: 5px;
+            margin-bottom: 3px;
+        }
+        .metric-box span {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* RECOMENDAÇÃO E CTA */
+        .cta-section {
+            margin-top: 30px;
+        }
+        .cta-section h3 {
+            color: #FFC107;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            background-color: #00CC00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-action:hover {
+            background-color: #009900;
+        }
+
+        /* BARRA DE NAVEGAÇÃO INFERIOR */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+    </style>
+</head>
+<body onload="carregarResultados()">
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="redirecionar('nutrition_goals.html')"></i>
+        <h1>Seu Plano de Macros</h1>
+    </div>
+    
+    <div class="content">
+
+        <div class="result-card">
+            <h2>Plano Nutricional Otimizado</h2>
+            <p>Seu objetivo é: <span id="displayGoal" style="font-weight: bold; color: #FFC107;"></span></p>
+            <p id="displayTimeframe">Prazo estimado: 3 meses</p>
+
+            <div class="macros-dashboard">
+                
+                <div class="macro-item">
+                    <i class="fas fa-drumstick-bite" style="color: #FF0000;"></i>
+                    <h3 id="gProteina">0g</h3>
+                    <span>PROTEÍNA</span>
+                </div>
+                
+                <div class="macro-item">
+                    <i class="fas fa-bread-slice" style="color: #66CCFF;"></i>
+                    <h3 id="gCarboidrato">0g</h3>
+                    <span>CARBOIDRATO</span>
+                </div>
+                
+                <div class="macro-item">
+                    <i class="fas fa-oil-can" style="color: #E0E0E0;"></i>
+                    <h3 id="gGordura">0g</h3>
+                    <span>GORDURA</span>
+                </div>
+            </div>
+            
+            <div class="calorie-summary">
+                <h4>Consumo Calórico Diário Ajustado:</h4>
+                <div class="total" id="totalKcal">0 kcal</div>
+            </div>
+        </div>
+        
+        <div class="emagrecimento-metrics" id="emagrecimentoMetrics">
+            <div class="metric-box">
+                <i class="fas fa-tint"></i>
+                <h4>Meta de Hidratação</h4>
+                <span id="aguaResult">0 L</span>
+            </div>
+            <div class="metric-box">
+                <i class="fas fa-fire-alt"></i>
+                <h4>Déficit Calórico Diário</h4>
+                <span id="deficitResult">0 kcal</span>
+            </div>
+            <p style="grid-column: 1 / 3; font-size: 13px; color: #999;">
+                O Déficit Calórico é o quanto você deve consumir ABAIXO do seu gasto total (TDEE).
+            </p>
+        </div>
+
+
+        <div class="cta-section">
+            <h3>Próximo Passo</h3>
+            <p style="margin-bottom: 20px; color: #ccc;">
+                Seu plano de macros foi salvo! Use este guia para planejar suas refeições diárias.
+            </p>
+            <button class="btn-action" onclick="alert('Simulação: Iniciar o Diário Alimentar e Log de Macros.')">
+                <i class="fas fa-utensils" style="margin-right: 8px;"></i> INICIAR REGISTRO ALIMENTAR
+            </button>
+        </div>
+
+
+    </div>
+
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    // Mapeamento de termos para exibição
+    const GOAL_DISPLAY = {
+        hipertrofia: "Ganho de Massa Muscular (Hipertrofia)",
+        emagrecimento: "Perda de Peso (Emagrecimento)",
+        resistencia: "Aumento de Resistência e Performance"
+    };
+
+    function carregarResultados() {
+        const resultsJson = localStorage.getItem('nutritionalResults');
+        const goal = localStorage.getItem('nutritionalGoal');
+        const timeframe = localStorage.getItem('goalTimeframeMonths');
+        const pesoUsuario = parseFloat(localStorage.getItem('pesoUsuario')); // Puxa o peso salvo na calculadora
+        const deficitDiario = localStorage.getItem('deficitDiario');
+
+        if (!resultsJson || !goal) {
+            alert("Erro: Dados nutricionais não encontrados. Por favor, calcule seu TMB e defina sua meta novamente.");
+            window.location.href = 'tmb_calculator.html';
+            return;
+        }
+
+        const resultados = JSON.parse(resultsJson);
+
+        // 1. Preenche Títulos e Prazo
+        document.getElementById('displayGoal').textContent = GOAL_DISPLAY[goal] || 'Meta Personalizada';
+        document.getElementById('displayTimeframe').textContent = `Prazo definido: ${timeframe || 3} meses`;
+
+        // 2. Preenche o Dashboard de Macros (em Gramas)
+        document.getElementById('gProteina').textContent = `${resultados.proteina.toLocaleString('pt-BR')}g`;
+        document.getElementById('gCarboidrato').textContent = `${resultados.carboidrato.toLocaleString('pt-BR')}g`;
+        document.getElementById('gGordura').textContent = `${resultados.gordura.toLocaleString('pt-BR')}g`;
+
+        // 3. Preenche o Resumo Calórico
+        document.getElementById('totalKcal').textContent = `${resultados.calorias.toLocaleString('pt-BR')} kcal`;
+
+
+        // 4. LÓGICA ESPECÍFICA PARA EMAGRECIMENTO
+        const metricsBox = document.getElementById('emagrecimentoMetrics');
+        if (goal === 'emagrecimento' && pesoUsuario > 0 && deficitDiario) {
+            metricsBox.style.display = 'grid'; // Mostra as métricas
+
+            // Cálculo da Água: 35 ml por kg de peso corporal
+            const aguaLitros = (pesoUsuario * 35) / 1000;
+            
+            document.getElementById('aguaResult').textContent = `${aguaLitros.toFixed(1).replace('.', ',')} Litros`;
+            document.getElementById('deficitResult').textContent = `${deficitDiario.toLocaleString('pt-BR')} kcal`;
+            
+        } else {
+            metricsBox.style.display = 'none'; // Esconde se não for emagrecimento ou se faltar dados
+        }
+    }
+
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'nutritional_result.html' || pagina === 'emagrecimento_setup.html' || pagina === 'timeframe_setup.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+</script>
+</body>
+</html>

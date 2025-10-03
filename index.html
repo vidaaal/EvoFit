@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px; /* Espaço para a nav bar fixa */
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #1f1f1f;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #FF0000;
+        }
+        .logout-icon {
+            font-size: 24px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .welcome-text {
+            line-height: 1.2;
+        }
+        .welcome-text p {
+            margin: 0;
+            font-size: 14px;
+            color: #ccc;
+        }
+        .welcome-text h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #FF0000;
+        }
+
+        /* ==================== SEÇÃO DE MOTIVAÇÃO E GAMIFICAÇÃO ==================== */
+        .motivation-card {
+            background-color: #2b2b2b;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        .gamification-info {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .points-box h3 {
+            font-size: 28px;
+            color: #FFC107; /* Amarelo para Pontos */
+            margin: 0;
+        }
+        .points-box p {
+            font-size: 12px;
+            color: #ccc;
+            margin: 0;
+        }
+        .motivation-text {
+            font-style: italic;
+            color: #999;
+            font-size: 15px;
+        }
+        
+        /* Botão para Chamar Instrutor */
+        #btnChamarInstrutor {
+            width: 100%;
+            padding: 15px;
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #btnChamarInstrutor:hover {
+            background-color: #CC0000;
+        }
+        
+        /* ==================== ESTILO DO NOVO BOTÃO DE PLANOS (ADAMGIEBL ADAPTADO) ==================== */
+        .btn-plano {
+            width: 100%;
+            background: #FFC107; /* Amarelo Vibrante */
+            color: #121212; /* Texto Escuro */
+            font-family: inherit;
+            padding: 0.8em 1.3em;
+            font-weight: 900;
+            font-size: 16px;
+            border: 3px solid #121212;
+            border-radius: 0.4em;
+            box-shadow: 0.1em 0.1em;
+            cursor: pointer;
+            margin-top: 15px; /* Espaço após o botão de Instrutor */
+            transition: all 0.3s;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5); /* Sombra Dark Mode */
+        }
+
+        .btn-plano:hover {
+            transform: translate(-0.05em, -0.05em);
+            box-shadow: 0.2em 0.2em;
+            border: 3px solid #FF0000; /* Borda vermelha ao hover */
+        }
+
+        .btn-plano:active {
+            transform: translate(0.05em, 0.05em);
+            box-shadow: 0.05em 0.05em;
+        }
+
+
+        /* ==================== SEÇÃO DE TREINO ATUAL ==================== */
+        .workout-section {
+            padding: 0 20px;
+        }
+        .workout-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            white-space: nowrap;
+        }
+        .tab-button {
+            background-color: #333;
+            color: #ccc;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .tab-button.active {
+            background-color: #FF0000;
+            color: white;
+        }
+        /* Contêiner onde os exercícios serão renderizados */
+        #exercises-list {
+            min-height: 200px; /* Garante que a área não suma quando vazia */
+        }
+        .exercise-card {
+            display: flex;
+            align-items: center;
+            background-color: #1f1f1f;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .exercise-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .exercise-details {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .exercise-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        .exercise-details p {
+            margin: 0;
+            font-size: 13px;
+            color: #999;
+        }
+        .arrow-icon {
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000; /* Ícone e texto da aba ativa */
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+
+    </style>
+</head>
+<body onload="inicializar()">
+
+    <div class="header">
+        <div class="user-info">
+            <img src="assets/images/avatar_placeholder.jpg" alt="Avatar" class="user-avatar" id="userAvatar">
+            <div class="welcome-text">
+                <p>Olá,</p>
+                <h2 id="userName">Rodrigo Gonçalves</h2>
+            </div>
+        </div>
+        <i class="fas fa-sign-out-alt logout-icon" onclick="fazerLogout()"></i>
+    </div>
+    
+    <div class="motivation-card">
+        <div class="gamification-info">
+            <div class="points-box">
+                <h3>1250</h3>
+                <p>Pontos EvoFit</p>
+            </div>
+            <div class="points-box">
+                <h3>85 kg</h3>
+                <p>Meta: Perder Peso</p>
+            </div>
+            <div class="points-box">
+                <h3>4 / 5</h3>
+                <p>Presenças Semanais</p>
+            </div>
+        </div>
+        
+        <p class="motivation-text" id="motivationQuote">
+            "A consistência de hoje é a força de amanhã."
+        </p>
+
+        <button id="btnChamarInstrutor" onclick="redirecionar('instructor.html')">
+            <i class="fas fa-headset" style="margin-right: 8px;"></i> CHAME UM INSTRUTOR!
+        </button>
+        
+        <button class="btn-plano" onclick="redirecionar('plan_details.html')">
+            <i class="fas fa-dollar-sign" style="margin-right: 5px;"></i> PLANOS E PAGAMENTOS
+        </button>
+    </div>
+
+    <div class="workout-section">
+        <h3 style="margin-bottom: 15px;">Seu Treino Atual</h3>
+        
+        <div class="workout-tabs" id="workoutTabs">
+            </div>
+        
+        <div id="exercises-list">
+            </div>
+
+    </div>
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item active" onclick="redirecionar('index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i>
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    // Dados Fictícios do Treino (Banco de Dados Simulado)
+    const WORKOUT_DATA = {
+        'COSTAS': [
+            { name: "Puxada frontal", sets: "3 séries x 12 repetições", img: "assets/images/pull_down.jpg" },
+            { name: "Remada curvada", sets: "3 séries x 12 repetições", img: "assets/images/bent_row.jpg" },
+            { name: "Remada unilateral", sets: "3 séries x 12 repetições", img: "assets/images/unilateral_row.jpg" },
+            { name: "Levantamento terra", sets: "3 séries x 8 repetições", img: "assets/images/deadlift.jpg" },
+        ],
+        'BÍCEPS': [
+            { name: "Rosca Direta", sets: "4 séries x 10 repetições", img: "assets/images/bicep_curl.jpg" },
+            { name: "Rosca Alternada", sets: "3 séries x 12 repetições", img: "assets/images/hammer_curl.jpg" },
+        ],
+        'TRÍCEPS': [
+            { name: "Tríceps Corda", sets: "4 séries x 15 repetições", img: "assets/images/rope_pushdown.jpg" },
+            { name: "Extensão Testa", sets: "3 séries x 12 repetições", img: "assets/images/skull_crusher.jpg" },
+        ],
+        'OMBRO': [
+            { name: "Desenvolvimento Halteres", sets: "3 séries x 10 repetições", img: "assets/images/shoulder_press.jpg" },
+            { name: "Elevação Lateral", sets: "4 séries x 12 repetições", img: "assets/images/lateral_raise.jpg" },
+        ],
+        'PERNA': [
+            { name: "Agachamento Livre", sets: "4 séries x 10 repetições", img: "assets/images/squat.jpg" },
+            { name: "Extensora", sets: "3 séries x 15 repetições", img: "assets/images/leg_extension.jpg" },
+        ],
+        'CARDIO': [
+            { name: "Esteira", sets: "20 minutos", img: "assets/images/treadmill.jpg" },
+            { name: "Elíptico", sets: "15 minutos", img: "assets/images/elliptical.jpg" },
+        ]
+    };
+    
+    // Lista de todos os grupos musculares
+    const WORKOUT_GROUPS = Object.keys(WORKOUT_DATA); 
+    
+    // ================= FUNÇÕES DE RENDERIZAÇÃO =================
+    
+    function renderTabs() {
+        const tabsContainer = document.getElementById('workoutTabs');
+        tabsContainer.innerHTML = ''; // Limpa abas antigas
+        
+        WORKOUT_GROUPS.forEach((group, index) => {
+            const button = document.createElement('button');
+            button.className = 'tab-button';
+            button.textContent = group;
+            button.setAttribute('data-group', group);
+            
+            // Adiciona a classe 'active' à primeira aba
+            if (index === 0) {
+                button.classList.add('active');
+            }
+            
+            // Adiciona a funcionalidade de clique para carregar o treino
+            button.onclick = () => loadWorkout(group, button);
+            
+            tabsContainer.appendChild(button);
+        });
+    }
+
+    function loadWorkout(group, clickedButton = null) {
+        const exercisesList = document.getElementById('exercises-list');
+        exercisesList.innerHTML = ''; // Limpa os exercícios atuais
+
+        const exercises = WORKOUT_DATA[group];
+        
+        if (exercises && exercises.length > 0) {
+            exercises.forEach(exercise => {
+                const card = `
+                    <div class="exercise-card" onclick="redirecionar('exercicio_detalhe.html')">
+                        <img src="${exercise.img || 'placeholder.jpg'}" alt="${exercise.name}" class="exercise-img">
+                        <div class="exercise-details">
+                            <h4>${exercise.name}</h4>
+                            <p>${exercise.sets}</p>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                `;
+                exercisesList.innerHTML += card;
+            });
+        } else {
+            exercisesList.innerHTML = '<p style="text-align: center; color: #999; margin-top: 30px;">Nenhum exercício encontrado para este grupo muscular.</p>';
+        }
+        
+        // Atualiza a aba ativa
+        if (clickedButton) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            clickedButton.classList.add('active');
+        }
+    }
+    
+    // ================= FUNÇÕES DE INICIALIZAÇÃO =================
+
+    function inicializar() {
+        // Verifica login
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'pages/login.html';
+            return;
+        }
+
+        // 1. Preenche o nome do usuário (puxando do localStorage)
+        const storedName = localStorage.getItem('userName') || 'Usuário EvoFit'; 
+        const storedNickname = localStorage.getItem('userNickname');
+        
+        // Se houver um apelido, usa o apelido. Senão, usa o nome completo.
+        const displayName = storedNickname || storedName; 
+        document.getElementById('userName').textContent = displayName;
+
+        // 2. Renderiza todas as abas
+        renderTabs();
+
+        // 3. Carrega o treino do primeiro grupo muscular por padrão
+        if (WORKOUT_GROUPS.length > 0) {
+            loadWorkout(WORKOUT_GROUPS[0]); 
+        }
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+
+    function fazerLogout() {
+        if (confirm("Tem certeza que deseja sair?")) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userNickname');
+            window.location.href = 'pages/login.html';
+        }
+    }
+
+    // Função unificada para redirecionar entre páginas principais
+    function redirecionar(pagina) {
+        if (pagina === 'index.html') {
+            window.location.href = 'index.html';
+        } else if (pagina === 'gamification.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'emagrecimento_setup.html' || pagina === 'timeframe_setup.html' || pagina === 'plan_details.html') {
+            window.location.href = 'pages/' + pagina;
+        }
+        else {
+            // Simulação para sub-telas e configurações
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+    
+    // Garante que a inicialização ocorra quando o corpo da página carregar
+    window.onload = inicializar;
+
+</script>
+</body>
+</html>

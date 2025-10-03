@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Escolha Seu Plano</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 20px;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h2 {
+            color: #FF0000;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .content p {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* ==================== CARDS DE PLANOS (CRIATIVIDADE) ==================== */
+        .plan-card {
+            background-color: #1f1f1f;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+            position: relative;
+        }
+        
+        /* Cores de Destaque */
+        .plan-basic { border-left: 5px solid #FFC107; } /* Amarelo */
+        .plan-performance { border-left: 5px solid #00CC00; } /* Verde */
+        .plan-premium { border-left: 5px solid #FF0000; } /* Vermelho EvoFit */
+
+        .plan-card h3 {
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+        
+        /* Preço e Economia */
+        .price-tag {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            margin: 0 0 5px 0;
+        }
+        .price-tag small {
+            font-size: 16px;
+            color: #999;
+            font-weight: normal;
+        }
+        .economy-badge {
+            background-color: #00CC00;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* Lista de Benefícios */
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 15px;
+        }
+        .benefits-list li {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: #E0E0E0;
+        }
+        .benefits-list .check {
+            color: #00CC00;
+            margin-right: 10px;
+        }
+        .benefits-list .plus {
+            color: #FFC107;
+            margin-right: 10px;
+        }
+        
+        /* Botão de Seleção */
+        .btn-select-plan {
+            width: 100%;
+            padding: 15px;
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-select-plan:hover {
+            background-color: #CC0000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="window.history.back()"></i>
+        <h1>Escolha Seu Plano</h1>
+    </div>
+
+    <div class="content">
+        <h2>Seu Próximo Nível de Treino</h2>
+        <p>Economize e ganhe mais benefícios ao comprometer-se com suas metas.</p>
+
+        <div class="plan-card plan-basic">
+            <h3>Plano Mensal (Básico)</h3>
+            <p class="price-tag">R$ 120<small>/mês</small></p>
+            
+            <ul class="benefits-list">
+                <li><i class="fas fa-check check"></i> Acesso livre à academia</li>
+                <li><i class="fas fa-plus plus"></i> Fit Dance pode ser contratado à parte (R$ 15)</li>
+                <li><i class="fas fa-plus plus"></i> Judô pode ser contratado à parte (R$ 15)</li>
+            </ul>
+            
+            <button class="btn-select-plan" onclick="selecionarPlano('Mensal', '120.00')">
+                ASSINAR AGORA
+            </button>
+        </div>
+
+        <div class="plan-card plan-performance">
+            <h3>Plano Trimestral (Performance)</h3>
+            <p class="price-tag">R$ 330<small>/trimestre</small></p>
+            <div class="economy-badge">Economia de 8% (R$ 110/mês)</div>
+            
+            <ul class="benefits-list">
+                <li><i class="fas fa-check check"></i> Acesso livre à academia</li>
+                <li><i class="fas fa-check check"></i> **Fit Dance Incluso**</li>
+                <li><i class="fas fa-plus plus"></i> Judô pode ser contratado à parte(R$ 10)</li>
+            </ul>
+            
+            <button class="btn-select-plan" onclick="selecionarPlano('Trimestral Performance', '330.00')">
+                ASSINAR AGORA
+            </button>
+        </div>
+
+        <div class="plan-card plan-premium">
+            <h3>Plano Anual (Premium)</h3>
+            <p class="price-tag">R$ 1.080<small>/ano</small></p>
+            <div class="economy-badge">Economia de 25% (R$ 90/mês)</div>
+            
+            <ul class="benefits-list">
+                <li><i class="fas fa-check check"></i> Acesso livre à academia</li>
+                <li><i class="fas fa-check check"></i> **Fit Dance Incluso**</li>
+                <li><i class="fas fa-check check"></i> **Judô Incluso**</li>
+            </ul>
+            
+            <button class="btn-select-plan" onclick="selecionarPlano('Anual Premium', '1080.00')">
+                ASSINAR AGORA
+            </button>
+        </div>
+
+    </div>
+
+
+<script>
+    
+    function selecionarPlano(nomePlano, preco) {
+        alert(`Simulação: Você escolheu o Plano ${nomePlano} (R$ ${preco}). Redirecionando para a tela de pagamento.`);
+        
+        // Em um app real, aqui o usuário seria redirecionado para a interface de pagamento.
+        
+        // Atualiza o status do plano (simulação)
+        localStorage.setItem('userPlanName', nomePlano);
+        
+        // Volta para o perfil para ver o plano atualizado
+        setTimeout(() => {
+             window.location.href = 'profile.html';
+        }, 500);
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    function redirecionar(pagina) {
+        window.location.href = pagina;
+    }
+    
+</script>
+</body>
+</html>

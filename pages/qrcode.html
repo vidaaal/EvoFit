@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Escanear Máquina</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ==================== ESTILOS GERAIS E DARK MODE ==================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ==================== CABEÇALHO E TÍTULO ==================== */
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #FF0000;
+        }
+
+        /* ==================== ÁREA DE ESCANEAMENTO (O Corpo do App) ==================== */
+        .scan-area {
+            flex-grow: 1; /* Ocupa o espaço restante */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #000; /* Fundo totalmente preto para simular a câmera */
+        }
+        .camera-view {
+            width: 90%;
+            max-width: 400px;
+            height: 350px;
+            background-image: url('../assets/images/maquina_placeholder.jpg'); /* Substitua pela imagem real */
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #FF0000; /* Borda Vermelha de Foco */
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        /* Linha de Scan Animada (Criatividade) */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #FF0000, transparent);
+            animation: scanning 2s infinite alternate;
+        }
+        @keyframes scanning {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+
+        /* ==================== CONTROLES DE SCAN E ALERTA ==================== */
+        .manual-input {
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .manual-input input {
+            width: 60%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            margin-right: 10px;
+        }
+        .manual-input button {
+            padding: 10px 15px;
+            background-color: #00CC00; /* Verde para simular sucesso no scan */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .alerta-scan {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #FFC107;
+        }
+
+        /* ==================== BARRA DE NAVEGAÇÃO INFERIOR - 6 Ícones ==================== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #666 !important;
+        }
+        .nav-item.active {
+            color: #FF0000;
+        }
+        .nav-item.active i {
+            color: #FF0000 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>ESCANEAR MÁQUINA</h1>
+    </div>
+
+    <div class="scan-area">
+        <div class="camera-view">
+            <div class="scan-line"></div>
+        </div>
+
+        <div class="manual-input">
+            <p style="margin: 0 0 10px 0; color: #999;">Simule o código da máquina:</p>
+            <input type="number" id="maquinaCode" placeholder="Ex: 123">
+            <button onclick="simularScan()">Escanear</button>
+            <div id="scanAlerta" class="alerta-scan"></div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item" onclick="redirecionar('../index.html')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('nutrition_goals.html')">
+            <i class="fas fa-apple-alt"></i> 
+            <span>Nutrição</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('gamification.html')">
+            <i class="fas fa-medal"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="#" class="nav-item active" onclick="redirecionar('qrcode.html')">
+            <i class="fas fa-qrcode"></i>
+            <span>Escanear</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('map.html')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="redirecionar('profile.html')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+<script>
+    // Dados Fictícios de Máquinas e Vídeos
+    const MAQUINAS_VIDEOS = {
+        '101': { nome: "Puxada Frontal", videoId: "video_puxada" },
+        '123': { nome: "Remada Curvada", videoId: "video_remada" }, // Código de teste
+        '205': { nome: "Leg Press", videoId: "video_leg" }
+    };
+
+    function simularScan() {
+        const code = document.getElementById('maquinaCode').value.trim();
+        const alerta = document.getElementById('scanAlerta');
+
+        if (!code) {
+            alerta.textContent = "Digite um código de máquina para simular o scan.";
+            alerta.style.color = '#FF0000';
+            return;
+        }
+
+        const maquina = MAQUINAS_VIDEOS[code];
+
+        if (maquina) {
+            alerta.textContent = `Máquina ${maquina.nome} encontrada! Carregando vídeo...`;
+            alerta.style.color = '#00CC00';
+
+            // Redireciona para a tela de demonstração com os dados da máquina
+            setTimeout(() => {
+                // Passa o nome do exercício na URL
+                window.location.href = `video_demonstration.html?id=${maquina.videoId}&name=${encodeURIComponent(maquina.nome)}`;
+            }, 1000);
+            
+        } else {
+            alerta.textContent = "QR Code inválido. Tente novamente ou chame um instrutor.";
+            alerta.style.color = '#FF0000';
+        }
+    }
+
+    // Função unificada para redirecionar entre páginas principais
+    function redirecionar(pagina) {
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            // Simulação para sub-telas e configurações
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvoFit - Prazo da Meta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Estilos base (Dark Mode) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; 
+            color: #E0E0E0; 
+            margin: 0;
+            padding-bottom: 70px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: white;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #E0E0E0;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1; /* Faz o conteúdo ocupar o espaço restante */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .content h2 {
+            color: #FF0000;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            color: #ccc;
+            margin-bottom: 40px;
+            font-size: 16px;
+            max-width: 300px;
+        }
+
+        /* Estilos do formulário e input */
+        .form-group {
+            width: 100%;
+            max-width: 280px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #E0E0E0;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #1f1f1f;
+            color: #E0E0E0;
+            font-size: 16px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        /* Estilo do botão de Ação (Confirmar) */
+        .btn-confirm {
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 10px;
+            background-color: #FF0000;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 100%;
+            max-width: 280px;
+            margin-top: 20px;
+        }
+
+        .btn-confirm:hover {
+            background-color: #e60000;
+        }
+
+        /* Modal (Pop-up de Erro) */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.6); 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1f1f1f;
+            margin: 15% auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 350px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h3 {
+            color: #FF0000;
+            margin-top: 0;
+        }
+
+        .modal-content button {
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="fas fa-arrow-left back-icon" onclick="redirecionar('nutrition_goals.html')"></i>
+        <h1>Prazo da Meta</h1>
+    </div>
+    
+    <div class="content">
+        <h2>Seu Desafio: Ganho de Massa</h2>
+        <p>Em quanto tempo você quer atingir sua meta de hipertrofia?</p>
+
+        <div class="form-group">
+            <label for="timeframe">Prazo Mínimo (3 Meses):</label>
+            <select id="timeframe">
+                <option value="3">3 Meses</option>
+                <option value="4">4 Meses</option>
+                <option value="5">5 Meses</option>
+                <option value="6">6 Meses</option>
+                <option value="9">9 Meses</option>
+                <option value="12">12 Meses (1 Ano)</option>
+            </select>
+        </div>
+        
+        <button class="btn-confirm" onclick="confirmarPrazo()">
+            VER MACROS
+        </button>
+
+    </div> 
+
+    <div id="tmbModal" class="modal">
+        <div class="modal-content">
+            <h3>Atenção Necessária!</h3>
+            <p>Você precisa calcular sua Taxa Metabólica Diária (TDEE) antes de definir metas nutricionais.</p>
+            <button onclick="redirecionar('tmb_calculator.html')">IR PARA CALCULADORA</button>
+        </div>
+    </div>
+
+
+<script>
+
+    // Relação Caloria/Grama dos Macronutrientes (Copiada do nutrition_goals.html)
+    const KCAL_POR_GRAMA = {
+        proteina: 4,
+        carboidrato: 4,
+        gordura: 9
+    };
+
+    // Fatores de Ajuste para Metas (Copiada do nutrition_goals.html)
+    const FATOR_METAS = {
+        hipertrofia: {
+            ajuste: 1.15, // Superávit de 15%
+            proteina_percent: 30, 
+            carboidrato_percent: 50, 
+            gordura_percent: 20
+        },
+        emagrecimento: {
+            ajuste: 0.80, 
+            proteina_percent: 35, 
+            carboidrato_percent: 40, 
+            gordura_percent: 25
+        },
+        resistencia: {
+            ajuste: 1.05, 
+            proteina_percent: 25, 
+            carboidrato_percent: 55, 
+            gordura_percent: 20
+        }
+    };
+    
+    // Função de Cálculo (Copiada do nutrition_goals.html)
+    function calcularMacros(tdee, meta) {
+        const fator = FATOR_METAS[meta];
+        const caloriasAjustadas = tdee * fator.ajuste;
+        
+        // 1. Cálculo das Calorias por Macro
+        const kcalProteina = caloriasAjustadas * (fator.proteina_percent / 100);
+        const kcalCarboidrato = caloriasAjustadas * (fator.carboidrato_percent / 100);
+        const kcalGordura = caloriasAjustadas * (fator.gordura_percent / 100);
+        
+        // 2. Conversão de Calorias para Gramas
+        const gProteina = Math.round(kcalProteina / KCAL_POR_GRAMA.proteina);
+        const gCarboidrato = Math.round(kcalCarboidrato / KCAL_POR_GRAMA.carboidrato);
+        const gGordura = Math.round(kcalGordura / KCAL_POR_GRAMA.gordura);
+
+        return {
+            calorias: Math.round(caloriasAjustadas),
+            proteina: gProteina,
+            carboidrato: gCarboidrato,
+            gordura: gGordura
+        };
+    }
+    
+    // ================= LÓGICA DE PRAZO E REDIRECIONAMENTO =================
+
+    function confirmarPrazo() {
+        const userTDEE = parseInt(localStorage.getItem('userTDEE'));
+        const meta = localStorage.getItem('nutritionalGoal'); // Deve ser 'hipertrofia'
+        const timeframe = document.getElementById('timeframe').value;
+
+        if (!meta || meta !== 'hipertrofia') {
+            alert("Erro: Meta inválida.");
+            return;
+        }
+
+        if (isNaN(userTDEE) || userTDEE <= 0) {
+            // Este caso deve ser capturado pelo checkTMB no carregamento, mas é uma segurança
+            document.getElementById('tmbModal').style.display = 'flex';
+            return;
+        }
+        
+        // 1. Calcular os macros
+        const resultados = calcularMacros(userTDEE, meta);
+        
+        // 2. Armazenar os resultados e o prazo
+        localStorage.setItem('nutritionalResults', JSON.stringify(resultados));
+        localStorage.setItem('goalTimeframeMonths', timeframe); 
+        
+        // 3. Redirecionar para a tela final de resultados
+        window.location.href = 'nutritional_result.html'; 
+    }
+    
+    // ================= VERIFICAÇÃO INICIAL =================
+    
+    function checkTMB() {
+        const userTDEE = parseInt(localStorage.getItem('userTDEE'));
+        const tmbModal = document.getElementById('tmbModal');
+
+        if (isNaN(userTDEE) || userTDEE <= 0) {
+            tmbModal.style.display = 'flex'; // Mostra o modal se o TMB não estiver calculado
+        }
+    }
+    
+    // ================= FUNÇÕES DE NAVEGAÇÃO =================
+    
+    function redirecionar(pagina) {
+        // Incluir todas as páginas para evitar erros
+        if (pagina === 'gamification.html' || pagina === '../index.html' || pagina === 'qrcode.html' || pagina === 'profile.html' || pagina === 'instructor.html' || pagina === 'map.html' || pagina === 'nutrition_goals.html' || pagina === 'tmb_calculator.html' || pagina === 'nutritional_result.html' || pagina === 'hipertrofia_timeframe_setup.html') {
+            window.location.href = pagina;
+        } 
+        else {
+            alert(`Simulação: Redirecionando para a página ${pagina.toUpperCase()}.`);
+        }
+    }
+    
+    window.onload = checkTMB;
+</script>
+</body>
+</html>
